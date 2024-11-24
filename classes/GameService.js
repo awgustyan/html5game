@@ -1,10 +1,12 @@
-import Instance from "./Instance.js"
-import Sprite from "./Sprite.js"
+import Instance from "./Instance.js";
+import Sprite from "./Sprite.js";
 
-export default class GameService {
+export default class GameService extends Instance {
     #lastDrawCurrentTime = 0;
 
     constructor() {
+        super()
+
         if (GameService._instance) {
            return GameService._instance
         }
