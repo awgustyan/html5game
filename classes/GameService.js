@@ -32,7 +32,7 @@ export default class GameService {
 
         // 
 
-        this.Canvas.dispatchEvent(new CustomEvent("Heartbeat", {
+        document.dispatchEvent(new CustomEvent("Heartbeat", {
             detail: { delta: dt }
         }));
 

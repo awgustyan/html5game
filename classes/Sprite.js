@@ -13,8 +13,8 @@ export default class Sprite extends Instance {
         this.Position = new Vector2(xPos, yPos);
         this.Size = new Vector2(xSize, ySize);
 
-        /*
-        this.#Game.Canvas.addEventListener("Heartbeat", (event) => {
+        
+        document.addEventListener("Heartbeat", (event) => {
             const dt = event.detail.delta
 
             const yMove = dt * 100;
@@ -29,6 +29,6 @@ export default class Sprite extends Instance {
                 && (this.Position.x + xMove) > 0) {
                     this.Position.x += xMove;
             } 
-        });*/
+        });
     }
 }
