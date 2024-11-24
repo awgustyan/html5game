@@ -1,0 +1,20 @@
+* {
+    margin: 0px;
+    padding: 0px;
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: white;
+}
+
+canvas {
+    background-color: black;
+    box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.06);
+}
