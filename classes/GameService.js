@@ -31,7 +31,9 @@ export default class GameService extends Instance {
         // Draw
 
         this.Workspace.Children.forEach(element => {
-            if (element.constructor.name == "Sprite") {
+            if (element.constructor.name == "Sprite" ||
+                element.constructor.name == "VelocitySprite"
+            ) {
                 this.Ctx.drawImage(element.Image, element.Position.x, element.Position.y, element.Size.x, element.Size.y)
             }
         });
