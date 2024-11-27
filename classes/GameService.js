@@ -13,10 +13,14 @@ export default class GameService extends Instance {
 
         GameService._instance = this;
 
+        this.Gravity = 1100;
+
         this.Canvas = document.getElementById("canvas");
         this.Ctx = this.Canvas.getContext("2d");
 
         this.Workspace = new Instance(this);
+
+        this.Enviroment = [];
     }
 
     draw = () => {
@@ -45,12 +49,23 @@ export default class GameService extends Instance {
     init = () => {
         this.Ctx.globalCompositeOperation = "destination-over";
 
-        var level = [
-            new Sprite(this.Workspace, "/assets/moon.png", 50, 100, 50, 50),
+        var enviroment = [
+            new Sprite(this.Workspace, "/assets/bricks.png", 64 * 0, 720 - 64, 64, 64),
+            new Sprite(this.Workspace, "/assets/bricks.png", 64 * 1, 720 - 64, 64, 64),
+            new Sprite(this.Workspace, "/assets/bricks.png", 64 * 2, 720 - 64, 64, 64),
+            new Sprite(this.Workspace, "/assets/bricks.png", 64 * 3, 720 - 64, 64, 64),
+            new Sprite(this.Workspace, "/assets/bricks.png", 64 * 4, 720 - 64, 64, 64),
+
+            new Sprite(this.Workspace, "/assets/bricks.png", 64 * 11, 720 - 64 * 4, 64, 64),
+            new Sprite(this.Workspace, "/assets/bricks.png", 64 * 12, 720 - 64 * 4, 64, 64),
+            new Sprite(this.Workspace, "/assets/bricks.png", 64 * 9, 720 - 64 * 4, 64, 64),
+            new Sprite(this.Workspace, "/assets/bricks.png", 64 * 10, 720 - 64 * 4, 64, 64),
         ]
 
-        level.forEach(element => {
+        enviroment.forEach(element => {
             this.Workspace.addChild(element);
+
+            this.Enviroment.push(element);
         });
 
         console.log("initted");
