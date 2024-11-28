@@ -17,6 +17,7 @@ export default class VelocitySprite extends Sprite {
         this.Velocity = new Vector2(0, 0);
 
         this.TouchingGround = false;
+        this.FallStartTime = 0;
     }
 
     physicsStep = (dt) => {
@@ -38,7 +39,7 @@ export default class VelocitySprite extends Sprite {
             const DLCornerObj = new Vector2(ObjPosition.x, ObjPosition.y + ObjSize.y);
             const DRCornerObj = new Vector2(ObjPosition.x + ObjSize.x, ObjPosition.y + ObjSize.y);
 
-            const CenterObj = new Vector2(ObjPosition.x + (ObjSize.x * 0.5), ObjPosition.y + (ObjSize.x * 0.5));
+            const CenterObj = new Vector2(ObjPosition.x + (ObjSize.x * 0.5), ObjPosition.y + (ObjSize.y * 0.5));
             
             if ((ULCorner.y < ULCornerObj.y && DLCorner.y < ULCornerObj.y) ||
                 (ULCorner.y > DLCornerObj.y && DLCorner.y > DLCornerObj.y)) {
@@ -46,12 +47,12 @@ export default class VelocitySprite extends Sprite {
             }
 
             if (CenterObj.x <= Center.x) {
-                if ((ULCorner.x + moveX) <= URCornerObj.x) {
-                    return "left";
+                if ((ULCorner.x + moveX) < URCornerObj.x) {
+                    return {direction : "left", collisionCordinate : URCornerObj.x};
                 }
             } else {
-                if ((URCorner.x + moveX) >= ULCornerObj.x) {
-                    return "right";
+                if ((URCorner.x + moveX) > ULCornerObj.x) {
+                    return {direction : "right", collisionCordinate : ULCornerObj.x - this.Size.x};
                 }
             }
 
@@ -66,7 +67,7 @@ export default class VelocitySprite extends Sprite {
             const DLCornerObj = new Vector2(ObjPosition.x, ObjPosition.y + ObjSize.y);
             const DRCornerObj = new Vector2(ObjPosition.x + ObjSize.x, ObjPosition.y + ObjSize.y);
 
-            const CenterObj = new Vector2(ObjPosition.x + (ObjSize.x * 0.5), ObjPosition.y + (ObjSize.x * 0.5));
+            const CenterObj = new Vector2(ObjPosition.x + (ObjSize.x * 0.5), ObjPosition.y + (ObjSize.y * 0.5));
             
             if ((ULCorner.x < ULCornerObj.x && URCorner.x < ULCornerObj.x) ||
                 (ULCorner.x > URCornerObj.x && URCorner.x > URCornerObj.x)) {
@@ -74,12 +75,12 @@ export default class VelocitySprite extends Sprite {
             }
 
             if (CenterObj.y <= Center.y) {
-                if ((ULCorner.y + moveY) <= DLCornerObj.y) {
-                        return "up";
+                if ((ULCorner.y + moveY) < DLCornerObj.y) {
+                    return {direction : "up", collisionCordinate : DLCornerObj.y};
                 }
             } else {
-                if ((DLCorner.y + moveY) >= ULCornerObj.y) {
-                    return "down";
+                if ((DLCorner.y + moveY) > ULCornerObj.y) {
+                    return {direction : "down", collisionCordinate : ULCornerObj.y  - this.Size.y};
                 }
             }
 
@@ -90,11 +91,11 @@ export default class VelocitySprite extends Sprite {
 
         let wouldTouchHorizontalBorder = function() {
             if ((this.Position.x + moveX) > (this.#Game.Canvas.width - this.Size.x)) {
-                return "right";
+                return {direction : "right", collisionCordinate : (this.#Game.Canvas.width - this.Size.x)};
             }
     
             if ((this.Position.x + moveX) <= 0) {
-                return "left";
+                return {direction : "left", collisionCordinate : 0};
             }
 
             return null;
@@ -104,11 +105,11 @@ export default class VelocitySprite extends Sprite {
 
         let wouldTouchVerticalBorder = function() {
             if ((this.Position.y + moveY) > (this.#Game.Canvas.height - this.Size.y)) {
-                return "down";
+                return {direction : "down", collisionCordinate : (this.#Game.Canvas.height - this.Size.y)};
             }
     
             if ((this.Position.y + moveY) <= 0) {
-                return "up";
+                return {direction : "up", collisionCordinate : 0};
             }
 
             return null;
@@ -116,50 +117,43 @@ export default class VelocitySprite extends Sprite {
 
         wouldTouchVerticalBorder = wouldTouchVerticalBorder.bind(this);
 
-        let wouldTouchDirectionX = wouldTouchHorizontalBorder();
-        let wouldTouchDirectionY = wouldTouchVerticalBorder();
+        let CollisionDataX = wouldTouchHorizontalBorder();
+        let CollisionDataY = wouldTouchVerticalBorder();
 
         for (let i = 0; i < this.#Game.Enviroment.length; i++) {
             let obj = this.#Game.Enviroment[i];
             
-            if (wouldTouchDirectionX && wouldTouchDirectionY) {
+            if (CollisionDataX && CollisionDataY) {
                 break;
             }
 
-            if (!wouldTouchDirectionX) {
-                wouldTouchDirectionX = wouldTouchHorizontal(obj.Position, obj.Size);
+            if (!CollisionDataX) {
+                CollisionDataX = wouldTouchHorizontal(obj.Position, obj.Size);
             }
             
-            if (!wouldTouchDirectionY) {
-                wouldTouchDirectionY = wouldTouchVertical(obj.Position, obj.Size);
+            if (!CollisionDataY) {
+                CollisionDataY = wouldTouchVertical(obj.Position, obj.Size);
             }
         }
 
-        if (!wouldTouchDirectionX) {
+        if (!CollisionDataX) {
             this.Position.x += moveX;
         } else {
-            if (wouldTouchDirectionX == "right") {
-                //this.Position.x = (this.#Game.Canvas.width - this.Size.x)
-                this.Velocity.x = 0
-            } else if (wouldTouchDirectionX == "left") {
-                //this.Position.x = 0
-                this.Velocity.x = 0
-            }
+            //this.Position.x = CollisionDataX.collisionCordinate
+            this.Velocity.x = 0;
         }
 
-        if (!wouldTouchDirectionY) {
+        if (!CollisionDataY) {
             this.Position.y += moveY;
 
             this.TouchingGround = false;
+            this.FallStartTime
         } else {
-            if (wouldTouchDirectionY == "up") {
-                //    
-                this.Velocity.y = 0
-            } else if (wouldTouchDirectionY == "down") {
-                //
+            //this.Position.y = CollisionDataY.collisionCordinate
+            this.Velocity.y = -this.Velocity.y + 100;
+
+            if (CollisionDataY.direction == "down") {
                 this.TouchingGround = true;
-                
-                this.Velocity.y = 0
             }
         }
     }

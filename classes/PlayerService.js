@@ -9,6 +9,7 @@ export default class PlayerService {
 
     #moveDirection = new Vector2(0, 0);
     #unitMoveDirection = new Vector2(0, 0);
+    #jumpsAvailable = 0;
 
     constructor() {
         if (PlayerService._instance) {
@@ -20,11 +21,15 @@ export default class PlayerService {
         this.WalkSpeed = 60;
         this.JumpPower = 700;
 
-        this.Player = new VelocitySprite(this.#Game.Workspace, "/assets/player.png", 50, 100, 70, 140);
+        this.JumpsMax = 1;
+
+        const SpawnPos = this.#Game.Level.SpawnPosition
+
+        this.Player = new VelocitySprite(this.#Game.Workspace, "/assets/player.png", SpawnPos.x, SpawnPos.y, 70, 140);
     }
 
     jump = () => {
-        this.Player.Velocity.y -= this.JumpPower;
+        this.Player.Velocity.y = -this.JumpPower;
     }
 
     init = () => {
@@ -68,7 +73,8 @@ export default class PlayerService {
               }
 
                 if (keyName === jumpKey) {
-                    if (!keysPressed[jumpKey] && this.Player.TouchingGround) {
+                    if (!keysPressed[jumpKey] && this.#jumpsAvailable > 0) {
+                        this.#jumpsAvailable -= 1;
                         this.jump();
                     }
         
@@ -108,9 +114,10 @@ export default class PlayerService {
         document.addEventListener("Heartbeat", (event) => {
             const dt = event.detail.delta;
 
-            document.getElementById("movedir").innerHTML = "Movedir: " + this.#unitMoveDirection;
+            document.getElementById("position").innerHTML = "Position: " + this.Player.Position;
             document.getElementById("velocity").innerHTML = "Velocity: " + this.Player.Velocity;
             document.getElementById("touchingGround").innerHTML = "Touching Ground: " + this.Player.TouchingGround;
+            document.getElementById("jumpsAval").innerHTML = "Jumps Available: " + this.#jumpsAvailable;
             document.getElementById("fps").innerHTML = "FPS: " + Math.round(1 / dt);
 
             this.Player.Velocity.y += this.#Game.Gravity * dt;
@@ -127,6 +134,10 @@ export default class PlayerService {
             this.Player.Velocity.x = Math.min(Math.max(this.Player.Velocity.x, -1000), 1000);
 
             this.Player.physicsStep(dt);
+
+            if (this.Player.TouchingGround) {
+                this.#jumpsAvailable = this.JumpsMax;
+            }
         });
     }
 }

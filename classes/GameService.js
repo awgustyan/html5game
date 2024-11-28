@@ -1,5 +1,6 @@
 import Instance from "./Instance.js";
 import Sprite from "./Sprite.js";
+import Vector2 from "./Vector2.js";
 
 export default class GameService extends Instance {
     #lastDrawCurrentTime = 0;
@@ -18,8 +19,23 @@ export default class GameService extends Instance {
         this.Canvas = document.getElementById("canvas");
         this.Ctx = this.Canvas.getContext("2d");
 
-        this.Workspace = new Instance(this);
+        this.Level = {
+            ["Objects"] : [
+                new Sprite(this.Workspace, "/assets/bricks.png", 64 * 0, 720 - 64, 64, 64),
+                new Sprite(this.Workspace, "/assets/bricks.png", 64 * 1, 720 - 64, 64, 64),
+                new Sprite(this.Workspace, "/assets/bricks.png", 64 * 2, 720 - 64, 64, 64),
+                new Sprite(this.Workspace, "/assets/bricks.png", 64 * 3, 720 - 64, 64, 64),
+                new Sprite(this.Workspace, "/assets/bricks.png", 64 * 4, 720 - 64, 64, 64),
+    
+                new Sprite(this.Workspace, "/assets/bricks.png", 64 * 11, 720 - 64 * 4, 64, 64),
+                new Sprite(this.Workspace, "/assets/bricks.png", 64 * 12, 720 - 64 * 4, 64, 64),
+                new Sprite(this.Workspace, "/assets/bricks.png", 64 * 9, 720 - 64 * 4, 64, 64),
+                new Sprite(this.Workspace, "/assets/bricks.png", 64 * 10, 720 - 64 * 4, 64, 64),
+            ],
+            ["SpawnPosition"] : new Vector2(64 * 1, 720 - 240)
+        };
 
+        this.Workspace = new Instance(this);
         this.Enviroment = [];
     }
 
@@ -51,22 +67,8 @@ export default class GameService extends Instance {
     init = () => {
         this.Ctx.globalCompositeOperation = "destination-over";
 
-        var enviroment = [
-            new Sprite(this.Workspace, "/assets/bricks.png", 64 * 0, 720 - 64, 64, 64),
-            new Sprite(this.Workspace, "/assets/bricks.png", 64 * 1, 720 - 64, 64, 64),
-            new Sprite(this.Workspace, "/assets/bricks.png", 64 * 2, 720 - 64, 64, 64),
-            new Sprite(this.Workspace, "/assets/bricks.png", 64 * 3, 720 - 64, 64, 64),
-            new Sprite(this.Workspace, "/assets/bricks.png", 64 * 4, 720 - 64, 64, 64),
-
-            new Sprite(this.Workspace, "/assets/bricks.png", 64 * 11, 720 - 64 * 4, 64, 64),
-            new Sprite(this.Workspace, "/assets/bricks.png", 64 * 12, 720 - 64 * 4, 64, 64),
-            new Sprite(this.Workspace, "/assets/bricks.png", 64 * 9, 720 - 64 * 4, 64, 64),
-            new Sprite(this.Workspace, "/assets/bricks.png", 64 * 10, 720 - 64 * 4, 64, 64),
-        ]
-
-        enviroment.forEach(element => {
+        this.Level.Objects.forEach(element => {
             this.Workspace.addChild(element);
-
             this.Enviroment.push(element);
         });
 
