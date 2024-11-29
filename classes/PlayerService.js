@@ -25,14 +25,14 @@ export default class PlayerService {
 
         const SpawnPos = this.#Game.Level.SpawnPosition
 
-        this.Player = new VelocitySprite(this.#Game.Workspace, "/assets/player.png", SpawnPos.x, SpawnPos.y, 70, 140);
+        this.Player = new VelocitySprite(this.#Game.Workspace, "/assets/player.png", new Vector2(SpawnPos.x, SpawnPos.y), new Vector2(70, 140));
     }
 
-    jump = () => {
+    Jump = () => {
         this.Player.Velocity.y = -this.JumpPower;
     }
 
-    init = () => {
+    Init = () => {
         let changeMoveDir = function(x, y) {
             this.#moveDirection.x += x;
             this.#moveDirection.y += y;
@@ -49,6 +49,7 @@ export default class PlayerService {
         var keysPressed = {
             leftKey : false,
             rightKey : false,
+            jumpKey : false,
         };
 
         document.addEventListener("keydown", (event) => {
@@ -75,7 +76,7 @@ export default class PlayerService {
                 if (keyName === jumpKey) {
                     if (!keysPressed[jumpKey] && this.#jumpsAvailable > 0) {
                         this.#jumpsAvailable -= 1;
-                        this.jump();
+                        this.Jump();
                     }
         
                     keysPressed[jumpKey] = true;
@@ -130,10 +131,10 @@ export default class PlayerService {
                 this.Player.Velocity.x += (this.#unitMoveDirection.x * this.WalkSpeed) - (this.Player.Velocity.x * 0.15);
             }
 
-            this.Player.Velocity.y = Math.min(Math.max(this.Player.Velocity.y, -3000), 400);
+            this.Player.Velocity.y = Math.min(Math.max(this.Player.Velocity.y, -3000), 450);
             this.Player.Velocity.x = Math.min(Math.max(this.Player.Velocity.x, -1000), 1000);
 
-            this.Player.physicsStep(dt);
+            this.Player.PhysicsStep(dt);
 
             if (this.Player.TouchingGround) {
                 this.#jumpsAvailable = this.JumpsMax;

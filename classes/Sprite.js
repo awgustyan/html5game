@@ -3,12 +3,14 @@ import Vector2 from "./Vector2.js";
 import GameService from "./GameService.js";
 
 export default class Sprite extends Instance {
-    constructor(parent, imageSrc, xPos, yPos, xSize, ySize) {
+    constructor(parent, imageSrc, positionV2, sizeV2, CanCollide) {
         super(parent);
 
         this.Image = new Image;
         this.Image.src = imageSrc;
-        this.Position = new Vector2(xPos, yPos);
-        this.Size = new Vector2(xSize, ySize);
+        this.Position = positionV2;
+        this.Size = sizeV2;
+
+        this.CanCollide = CanCollide;
     }
 }
