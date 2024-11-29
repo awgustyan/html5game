@@ -6,8 +6,8 @@ import Sprite from "./Sprite.js";
 export default class VelocitySprite extends Sprite {
     #Game = new GameService;
 
-    constructor(parent, imageSrc, positionV2, sizeV2) {
-        super(parent, imageSrc, positionV2, sizeV2);
+    constructor(parent, imageSrc, zIndex, positionV2, sizeV2, CanCollide) {
+        super(parent, imageSrc, zIndex, positionV2, sizeV2, CanCollide);
 
         this.Image = new Image;
         this.Image.src = imageSrc;
@@ -123,7 +123,7 @@ export default class VelocitySprite extends Sprite {
         for (let i = 0; i < this.#Game.Workspace.Children.length; i++) {
             let obj = this.#Game.Workspace.Children[i];
 
-            if (!obj.CanCollide) {
+            if (!obj.CanCollide || obj == this) {
                 continue;
             }
             
@@ -159,7 +159,7 @@ export default class VelocitySprite extends Sprite {
             this.FallStartTime
         } else {
             //this.Position.y = CollisionDataY.collisionCordinate            
-            document.dispatchEvent(new CustomEvent("CollisionX", {
+            document.dispatchEvent(new CustomEvent("CollisionY", {
                 detail: {owner: this, direction: CollisionDataY.direction, obj: CollisionDataY.obj}
             }));
 

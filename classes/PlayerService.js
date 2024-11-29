@@ -25,7 +25,7 @@ export default class PlayerService {
 
         const SpawnPos = this.#Game.Level.SpawnPosition
 
-        this.Player = new VelocitySprite(this.#Game.Workspace, "/assets/player.png", new Vector2(SpawnPos.x, SpawnPos.y), new Vector2(70, 140));
+        this.Player = new VelocitySprite(this.#Game.Workspace, "/assets/player.png", 1, new Vector2(SpawnPos.x, SpawnPos.y), new Vector2(70, 140));
     }
 
     Jump = () => {
@@ -83,9 +83,9 @@ export default class PlayerService {
                 }
             },
             false,
-          );
+        );
           
-          document.addEventListener("keyup", (event) => {
+        document.addEventListener("keyup", (event) => {
               const keyName = event.key;
           
                 if (keyName === leftKey) {
@@ -109,8 +109,21 @@ export default class PlayerService {
                 }
             },
             false,
-          );
-          
+        );
+
+        document.addEventListener("CollisionY", (event) => {
+            if (event.detail.owner != this.Player) {
+                return;
+            };
+
+            if (!event.detail.obj) {
+                return;
+            }
+
+            if (event.detail.obj.constructor.name == "Roomba" && event.detail.direction == "down" ) {
+                event.detail.obj.Destroy();
+            }
+        });
 
         document.addEventListener("Heartbeat", (event) => {
             const dt = event.detail.delta;
