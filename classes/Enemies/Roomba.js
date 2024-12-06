@@ -11,7 +11,7 @@ export default class Roomba extends VelocitySprite {
     constructor(parent, imageSrc, zIndex, positionV2, sizeV2, CanCollide) {
         super(parent, imageSrc, zIndex, positionV2, sizeV2, CanCollide);
 
-        this.WalkSpeed = 5;
+        this.WalkSpeed = 25;
 
         this.Init();
     }
@@ -47,9 +47,5 @@ export default class Roomba extends VelocitySprite {
         this.Velocity.x = Math.min(Math.max(this.Velocity.x, -1000), 1000);
 
         this.PhysicsStep(dt);
-    }
-
-    Destroy = () => {
-        this.Destroying = true;
     }
 }

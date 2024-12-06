@@ -12,6 +12,7 @@ export default class VelocitySprite extends Sprite {
         this.Image = new Image;
         this.Image.src = imageSrc;
 
+        this.LastPosition = positionV2;
         this.Position = positionV2;
         this.Size = sizeV2;
         this.Velocity = new Vector2(0, 0);
@@ -90,7 +91,7 @@ export default class VelocitySprite extends Sprite {
         wouldTouchVertical = wouldTouchVertical.bind(this);
 
         let wouldTouchHorizontalBorder = function() {
-            if ((this.Position.x + moveX) > (this.#Game.Canvas.width - this.Size.x)) {
+            if ((this.Position.x + moveX) > (this.#Game.WorkspaceSize.x - this.Size.x)) {
                 return {direction : "right", collisionCordinate : (this.#Game.Canvas.width - this.Size.x), obj : null};
             }
     
@@ -104,7 +105,7 @@ export default class VelocitySprite extends Sprite {
         wouldTouchHorizontalBorder = wouldTouchHorizontalBorder.bind(this);
 
         let wouldTouchVerticalBorder = function() {
-            if ((this.Position.y + moveY) > (this.#Game.Canvas.height - this.Size.y)) {
+            if ((this.Position.y + moveY) > (this.#Game.WorkspaceSize.y - this.Size.y)) {
                 return {direction : "down", collisionCordinate : (this.#Game.Canvas.height - this.Size.y), obj : null};
             }
     
@@ -139,6 +140,8 @@ export default class VelocitySprite extends Sprite {
                 CollisionDataY = wouldTouchVertical(obj);
             }
         }
+
+        this.LastPosition = new Vector2(this.Position.x, this.Position.y)
 
         if (!CollisionDataX) {
             this.Position.x += moveX;

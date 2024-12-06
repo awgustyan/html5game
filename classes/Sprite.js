@@ -16,4 +16,8 @@ export default class Sprite extends Instance {
 
         this.Destroying = false;
     }
+
+    Destroy = () => {
+        this.Destroying = true;
+    }
 }
